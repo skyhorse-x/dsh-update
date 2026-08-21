@@ -1,0 +1,11 @@
+# dsh-update: registers the host-side update checker and the browser-side
+# notification banner. Inserted after dsh-base and dsh-web-app layers.
+
+- insert:
+    # Host service: registers /api/dsh-update/check on the webserver.
+    - id: dsh-update
+      name: dsh-update
+
+    # Browser plugin: polls the host endpoint and renders the update banner.
+    - id: dsh-update-client
+      name: dsh-update/dist/client

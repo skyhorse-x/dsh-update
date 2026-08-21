@@ -1,0 +1,45 @@
+{
+  "name": "dsh-update",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness update checker - notifies when a new version is available",
+  "type": "module",
+  "main": "src/host.js",
+  "exports": {
+    ".": {
+      "types": "./src/host.ts",
+      "default": "./src/host.js"
+    },
+    "./dist/client": {
+      "types": "./src/client.ts",
+      "default": "./src/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "cordis.patch.yml",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "update",
+    "updater"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@deepseek-ai/cordis": "*"
+  }
+}
