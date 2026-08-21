@@ -9,14 +9,8 @@
       "types": "./dist/host.d.ts",
       "default": "./dist/host.js"
     },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "default": "./dist/client.js"
-    },
-    "./dist/client": {
-      "types": "./dist/client.d.ts",
-      "default": "./dist/client.js"
-    },
+    "./client": "./dist/client.js",
+    "./dist/client": "./dist/client.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -27,7 +21,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc && node build-client.js"
+    "build": "tsc --noEmit"
   },
   "keywords": [
     "deepseek",
@@ -50,10 +44,6 @@
     "@deepseek-ai/cordis": "*",
     "@types/node": "^26.2.0",
     "esbuild": "^0.24.0",
-    "rimraf": "^6.0.1",
     "typescript": "^5.7.0"
-  },
-  "allowScripts": {
-    "esbuild@0.24.2": true
   }
 }
