@@ -27,7 +27,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc && esbuild src/client.ts --bundle --format=cjs --platform=browser --outfile=dist/client.cjs --minify && node build-client.js && rimraf dist/client.cjs"
+    "build": "tsc && node build-client.js"
   },
   "keywords": [
     "deepseek",

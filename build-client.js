@@ -2,11 +2,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 const ID = 'dsh-update';
 
-// Read the bundled CJS output
-let cjs = readFileSync(new URL('./dist/client.cjs', import.meta.url), 'utf8');
-
-// Add direct exports (esbuild uses getters, DSH needs direct properties)
-cjs += '\nmodule.exports.apply = exports.apply;\nmodule.exports.name = exports.name;\n';
+// Read the hand-written CJS bundle
+const cjs = readFileSync(new URL('./src/client.bundle.cjs', import.meta.url), 'utf8');
 
 // Wrap in DSH client module loader format
 const wrapped = `window.__ModuleLoader__.load({
@@ -14,7 +11,6 @@ const wrapped = `window.__ModuleLoader__.load({
 \tfactory: (require) => {
 \t\tvar module = { exports: {} };
 \t\tvar exports = module.exports;
-\t\tObject.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 ${cjs.split('\n').map(line => '\t\t' + line).join('\n')}
 \t\treturn exports;
 \t}
