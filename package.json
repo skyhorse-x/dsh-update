@@ -9,6 +9,10 @@
       "types": "./dist/host.d.ts",
       "default": "./dist/host.js"
     },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
     "./dist/client": {
       "types": "./dist/client.d.ts",
       "default": "./dist/client.js"
@@ -37,6 +41,9 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
     }
   },
   "devDependencies": {

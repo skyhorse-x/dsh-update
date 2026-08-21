@@ -1,15 +1,12 @@
 # dsh-update: registers the host-side update checker and the browser-side
 # notification banner.
 #
-# These entries must be inserted AFTER the dsh-web-app bundle layer so that
-# `logger` (host) and `slots` (browser) services are available.
+# The host entry is loaded via package.json "main".
+# The client entry is auto-detected via package.json "dsh.client" declaration.
 
 - insert:
-    # Host service: registers /api/dsh-update/check on the webserver.
     - id: dsh-update
       name: dsh-update
 
-    # Browser plugin: polls the host endpoint and renders the update banner.
-    # Inserted alongside the browser plugin roster.
     - id: dsh-update-client
-      name: dsh-update/dist/client
+      name: dsh-update
