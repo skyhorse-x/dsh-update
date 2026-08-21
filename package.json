@@ -27,7 +27,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && esbuild src/client.ts --bundle --format=cjs --platform=browser --outfile=dist/client.cjs --minify && node build-client.js && rimraf dist/client.cjs"
   },
   "keywords": [
     "deepseek",
@@ -49,6 +49,11 @@
   "devDependencies": {
     "@deepseek-ai/cordis": "*",
     "@types/node": "^26.2.0",
+    "esbuild": "^0.24.0",
+    "rimraf": "^6.0.1",
     "typescript": "^5.7.0"
+  },
+  "allowScripts": {
+    "esbuild@0.24.2": true
   }
 }
