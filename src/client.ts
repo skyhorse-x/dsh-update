@@ -43,11 +43,7 @@ async function fetchUpdateCheck(): Promise<UpdateCheckResult | null> {
 
 export const name = PLUGIN_NAME
 
-export const inject = ['slots']
-
 export function apply(ctx: Context) {
-  const slots = ctx.slots
-
   let dismissed = false
   let timer: ReturnType<typeof setInterval> | undefined
   let unregister: (() => void) | undefined
@@ -61,10 +57,12 @@ export function apply(ctx: Context) {
     if (!result?.hasUpdate || !result.release) return
 
     // Register into the root slot at priority -1 so it overlays the shell.
-    unregister = slots.register(
-      { name: 'root', priority: -1 },
-      () => createBanner(result),
-    )
+    if (ctx.slots) {
+      unregister = ctx.slots.register(
+        { name: 'root', priority: -1 },
+        () => createBanner(result),
+      )
+    }
   }
 
   /** Build the React banner element. */
@@ -89,8 +87,8 @@ export function apply(ctx: Context) {
     })
   }
 
-  // Start polling once slots are ready.
-  ctx.effect(() => {
+  // Start polling once slots are ready (lazy injection).
+  ctx.inject(['slots'], (slotCtx) => {
     poll()
     timer = setInterval(poll, POLL_INTERVAL_MS)
     return () => {
@@ -103,7 +101,7 @@ export function apply(ctx: Context) {
         unregister = undefined
       }
     }
-  }, `${PLUGIN_NAME}.poll`)
+  })
 }
 
 // ── Banner component ───────────────────────────────────────────────────────

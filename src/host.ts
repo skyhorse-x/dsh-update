@@ -33,9 +33,6 @@ const CACHE_TTL_MS = 5 * 60 * 1000
 /** Read the currently installed DSH version from the host's package.json. */
 function getCurrentVersion(): string {
   try {
-    // Walk up from this module to find the DSH installation root.
-    // In a bundled install, this file lives under the profile's node_modules,
-    // so we search ancestor directories for the host package.json.
     const here = dirname(fileURLToPath(import.meta.url))
     let dir = here
     for (let i = 0; i < 8; i++) {
@@ -165,13 +162,10 @@ async function checkForUpdate(
 
 export const name = PLUGIN_NAME
 
-export const inject = ['webServer', 'logger']
-
 export function apply(ctx: Context) {
-  const logger = ctx.logger
-
   let cache: UpdateCheckResult | null = null
   let cacheExpiry = 0
+  let disposeRoute: (() => void) | undefined
 
   /** Serve the /api/dsh-update/check endpoint. */
   async function handleCheck(req: any, res: any): Promise<void> {
@@ -189,28 +183,41 @@ export function apply(ctx: Context) {
     cacheExpiry = now + CACHE_TTL_MS
 
     if (result.hasUpdate) {
-      logger.info(
-        '[%s] new DSH version available: %s → %s',
-        PLUGIN_NAME,
-        result.currentVersion,
-        result.latestVersion,
-      )
+      try {
+        ctx.logger?.info(
+          '[%s] new DSH version available: %s → %s',
+          PLUGIN_NAME,
+          result.currentVersion,
+          result.latestVersion,
+        )
+      } catch {
+        // logger may not be available; ignore
+      }
     }
 
     res.writeHead(200, { 'content-type': 'application/json' })
     res.end(JSON.stringify(result))
   }
 
-  // Register the route once the webserver is available.
+  // Register the route once the webserver is available (lazy injection).
   ctx.inject(['webServer'], (webCtx) => {
-    const dispose = webCtx.webServer.register({
+    disposeRoute = webCtx.webServer.register({
       kind: 'exact',
       path: '/api/dsh-update/check',
       handler: handleCheck,
     })
 
-    logger.info('[%s] registered /api/dsh-update/check', PLUGIN_NAME)
+    try {
+      ctx.logger?.info('[%s] registered /api/dsh-update/check', PLUGIN_NAME)
+    } catch {
+      // ignore
+    }
 
-    ctx.effect(() => dispose)
+    return () => {
+      if (disposeRoute) {
+        disposeRoute()
+        disposeRoute = undefined
+      }
+    }
   })
 }
