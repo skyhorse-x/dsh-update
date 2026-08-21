@@ -9,6 +9,14 @@
 import type { Context } from '@deepseek-ai/cordis'
 import type { UpdateCheckResult } from './types.js'
 
+declare module '@deepseek-ai/cordis' {
+  interface Context {
+    slots: {
+      register(options: { name: string; priority?: number }, component: () => any): () => void
+    }
+  }
+}
+
 const PLUGIN_NAME = 'dsh-update-client'
 
 /** How often (ms) to re-check for updates from the host. */

@@ -17,6 +17,14 @@ import {
   type UpdateCheckResult,
 } from './types.js'
 
+declare module '@deepseek-ai/cordis' {
+  interface Context {
+    webServer: {
+      register(route: { kind: string; path: string; handler: (req: any, res: any) => Promise<void> }): () => void
+    }
+  }
+}
+
 const PLUGIN_NAME = 'dsh-update'
 
 /** How long (ms) to cache a check result before re-fetching from GitHub. */
@@ -203,6 +211,6 @@ export function apply(ctx: Context) {
 
     logger.info('[%s] registered /api/dsh-update/check', PLUGIN_NAME)
 
-    ctx.on('dispose', dispose)
+    ctx.effect(() => dispose)
   })
 }
